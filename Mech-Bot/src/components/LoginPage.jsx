@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import './LoginPage.css';
 
-const API_URL = 'https://inventory-mng-backend.vercel.app/api/auth';
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth`;
 
 const LoginPage = ({ onLoginSuccess }) => {
     const { login } = useContext(AuthContext);

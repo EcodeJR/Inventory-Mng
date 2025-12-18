@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import './ProductForm.css';
 
-const API_URL = 'https://inventory-mng-backend.vercel.app/products';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const ProductForm = () => {
     const { user } = useContext(AuthContext);
@@ -44,7 +44,7 @@ const ProductForm = () => {
                 },
             };
 
-            const { data } = await axios.post(API_URL, productData, config);
+            const { data } = await axios.post(`${API_URL}/products`, productData, config);
             setMessage(`✅ Success! Product added with ID: ${data._id}`);
             setFormData({
                 part_name: '', vehicle: '', year: '', price_NGN: '', 
