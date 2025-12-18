@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import './ProductForm.css';
 
-const API_URL = 'http://localhost:5000/api/products';
+const API_URL = 'https://inventory-mng-backend.vercel.app/products';
 
 const ProductForm = () => {
     const { user } = useContext(AuthContext);
