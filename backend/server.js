@@ -20,26 +20,26 @@ const allowedOrigins = [
     'https://mechanic-bot-8ahf.onrender.com'
 ];
 
-// Add env variable if it exists
-if (process.env.CORS_ORIGIN && !allowedOrigins.includes(process.env.CORS_ORIGIN)) {
-    allowedOrigins.push(process.env.CORS_ORIGIN);
-}
-
 console.log('Allowed CORS Origins:', allowedOrigins);
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            console.error('CORS blocked origin:', origin);
-            callback(new Error('CORS not allowed'));
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+// CORS middleware - Handle preflight requests
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Credentials', 'true');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    }
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    
+    next();
+});
 
 // --- Routes ---
 app.get('/', (req, res) => {
