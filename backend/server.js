@@ -7,10 +7,24 @@ const authRoutes = require('./routes/authRoutes');
 const cors = require('cors');
 
 dotenv.config();
-connectDB(); // Connect to MongoDB
 
 const app = express();
 app.use(express.json()); // Body parser
+
+// Connect to MongoDB on first request
+let dbConnected = false;
+app.use(async (req, res, next) => {
+    if (!dbConnected) {
+        try {
+            await connectDB();
+            dbConnected = true;
+        } catch (error) {
+            console.error('DB Connection Error:', error.message);
+            return res.status(500).json({ message: 'Database connection failed' });
+        }
+    }
+    next();
+});
 
 // CORS Configuration - Explicit whitelist
 const allowedOrigins = [
