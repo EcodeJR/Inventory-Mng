@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
-const cors = require('cors'); // Essential for connecting front-end
+const cors = require('cors');
 
 dotenv.config();
 connectDB(); // Connect to MongoDB
@@ -12,23 +12,33 @@ connectDB(); // Connect to MongoDB
 const app = express();
 app.use(express.json()); // Body parser
 
-// CORS Configuration
+// CORS Configuration - Explicit whitelist
 const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:5173',
     'https://inventory-mng-admin.vercel.app',
-    'https://mechanic-bot-8ahf.onrender.com',
-    process.env.CORS_ORIGIN
-].filter(Boolean); // Remove undefined values
+    'https://mechanic-bot-8ahf.onrender.com'
+];
+
+// Add env variable if it exists
+if (process.env.CORS_ORIGIN && !allowedOrigins.includes(process.env.CORS_ORIGIN)) {
+    allowedOrigins.push(process.env.CORS_ORIGIN);
+}
+
+console.log('Allowed CORS Origins:', allowedOrigins);
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.error('CORS blocked origin:', origin);
+            callback(new Error('CORS not allowed'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // --- Routes ---
@@ -44,5 +54,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(
     PORT,
-    console.log(`Server running in development mode on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 );
