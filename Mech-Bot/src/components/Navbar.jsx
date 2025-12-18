@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import './Navbar.css';
+import './navbar.css';
 
 const Navbar = ({ onLogout }) => {
     const { user } = useContext(AuthContext);
