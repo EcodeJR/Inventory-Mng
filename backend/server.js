@@ -11,7 +11,9 @@ connectDB(); // Connect to MongoDB
 
 const app = express();
 app.use(express.json()); // Body parser
-app.use(cors({ origin: 'http://localhost:5173' })); // Allow React front-end to connect
+
+// CORS Configuration
+app.use(cors({ origin: process.env.CORS_ORIGIN })); // Allow React front-end to connect
 
 // --- Routes ---
 app.get('/', (req, res) => {
