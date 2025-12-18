@@ -13,7 +13,23 @@ const app = express();
 app.use(express.json()); // Body parser
 
 // CORS Configuration
-app.use(cors({ origin: [process.env.CORS_ORIGIN, "https://mechanic-bot-8ahf.onrender.com"] })); // Allow React front-end to connect
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://inventory-mng-admin.vercel.app',
+    'https://mechanic-bot-8ahf.onrender.com',
+    process.env.CORS_ORIGIN
+].filter(Boolean); // Remove undefined values
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 
 // --- Routes ---
 app.get('/', (req, res) => {
