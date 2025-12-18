@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json()); // Body parser
 
 // CORS Configuration
-app.use(cors({ origin: process.env.CORS_ORIGIN })); // Allow React front-end to connect
+app.use(cors({ origin: [process.env.CORS_ORIGIN, "https://mechanic-bot-8ahf.onrender.com"] })); // Allow React front-end to connect
 
 // --- Routes ---
 app.get('/', (req, res) => {
